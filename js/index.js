@@ -6,11 +6,25 @@ const resultText = [['01', '大展鴻圖，信用得固，無遠弗界，可獲�
 const phoneEl = document.querySelector("#phone-number");
 const analyticsEl = document.querySelector("#analytics");
 const resultEl = document.querySelector("#result");
-const resultTextEl = document.querySelector("#result-text")
+const resultTextEl = document.querySelector("#result-text");
+const timeEl = document.querySelector("#time");
 
-console.log(phoneEl, analyticsEl, resultEl, resultTextEl);
+const resultComment = ['吉', '兇', '吉帶兇', '兇帶吉']
 
-phoneEl.value = "0988883456";
+console.log(phoneEl, analyticsEl, resultEl, resultTextEl, timeEl);
+
+//phoneEl.value = "0988883456";
+
+
+
+function getTime() {
+    let date = new Date();
+    timeEl.innerText = `${date.getFullYear()}-${date.getMonth() + 1}\
+    -${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    setTimeout(getTime, 1000);
+}
+
+
 
 function analytics() {
     let phoneNumber = phoneEl.value;
@@ -36,15 +50,43 @@ function analytics() {
     let code = analyticsPhoneNumber(phoneNumber);
 
     let result = resultText[code - 1];
+
+    flashResult(result);
+}
+
+let flashCount = 0;
+
+function flashResult(result) {
+    // 顯示亂數結果 
+    let comment = resultComment[getRandInt(0, resultComment.length - 1)];
+    resultEl.innerText = comment;
+    // 三元運算子
+    resultEl.style.color = (resultEl.innerText == "吉" ||
+        resultEl.innerText == "吉帶凶") ? "yellow" : "black";
+    // 製作閃爍功能
+    if (flashCount++ < 120) {
+        setTimeout(
+            function () {
+                flashResult(result);
+            }
+            , getRandInt(5, 15));
+        return;
+    }
+
+    flashCount = 0;
+    //最後結果
     console.log(result);
     resultEl.innerText = result[2];
     resultTextEl.innerText = result[1];
 
     //三元運算子
     resultEl.style.color = resultEl.innerText == "吉" || resultEl.innerText == "吉帶兇" ? "yellow" : "black";
-
 }
 
+
+function getRandInt(start, end) {
+    return Math.floor(Math.random() * (end - start + 1)) + start;
+}
 
 function analyticsPhoneNumber(phoneNumber) {
     let fourNumber = phoneNumber.substring(phoneNumber.length - 4, phoneNumber.length);
